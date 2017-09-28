@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+    <head>
+    	<title> New Message</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="/ui/style.css" rel="stylesheet" />
+    </head>
+
+    <div class="center">    
+        <img id="image" src="/ui/logo.png" class="img-small"/>
+    </div>
+    <br>
+        <body>
+        <div class='top left text-bold'>
+        	<h1>New Message</h1>
+        </div>
+        <hr/>
+        <div class='left'>
+            
+    	   <h4><b>To</b></h4>
+            <input id='receiver' type='text' placeholder='Enter the user id' size="50" />
+            <br/>
+            <h4><b>Message</b></h4>
+    	    <input id='content' type='text' placeholder="Enter your message" style="width:700px; height:300px;" />
+            <br/>
+    	    <input id='newMessageBtn' type=submit value='Submit'/>
+        </div>
+
+        <script type="text/javascript" src="/ui/new-message.js">
+        </script>
+        </body>
+</html>

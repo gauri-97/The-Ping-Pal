@@ -1,0 +1,33 @@
+body {
+    font-family:"Comic Sans MS";
+    background-image: url(/ui/background.png);
+    margin-top: 30px;
+}
+.center {
+    text-align: center;
+}
+
+.text-big {
+    font-size: 300%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.img-medium {
+    height: 200px;
+}
+.img-small{
+	align-content: right;
+	height:100px;
+}
+.container
+{
+		max-width: 800px;
+		margin: 0 auto;
+		color: #2f2c2c;
+		font-family: sans-serif;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
