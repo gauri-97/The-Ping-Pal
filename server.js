@@ -24,7 +24,6 @@ app.use(session({
 
 
 app.get('/', function (req, res) {
-	console.log('called');
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
 
@@ -195,28 +194,39 @@ app.get('/fetch-message', function(req, res){
 	if(req.session && req.session.auth && req.session.auth.username)
 	{
 		var receiver=req.session.auth.username.toString();
-		pool.query('Select * from "message" where receiver=$1',[receiver],function(err,result){
+		console.log(receiver);
+		
+		pool.query('select sender,content from "message" where receiver=$1', [receiver],function(err,result){
+			
 			if(err)
-			{
-				if(err.toString()==='error: insert or update on table "message" violates foreign key constraint "message_receiver_fkey"')
-				{	console.log(err.toString());
+			{	
+				if(result.rows.length===0)
+				{	
 					res.status(403).send(err.toString());
 
 				}
 				else
-				{	console.log(1)
-					console.log(err.toString());
+				{	
+					console.log('something went wrong');
 					res.status(500).send(err.toString());
 				}
 			}
 			else
-			{	console.log(result.toString());
-				res.send(result.toString());
+			{				
+				var list=``;
+				var len=result.rows.length;
+				for(var i=0;i<len;i++){
+				var temp= result.rows[i];
+				temp=JSON.stringify(temp);
+					list=list+'<li>' +temp+'</li>';
+				}
+				res.send(list);
 			}
 		});
 	}
 	else
-	{
+	{	
+		
 		res.send('You are not logged in');
 	}
 });
