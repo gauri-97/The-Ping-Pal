@@ -63,7 +63,13 @@ app.get('/ui/new-message.js', function (req, res) {
 app.get('/new-message',function(req,res){
 res.sendFile(path.join(__dirname, 'ui', 'new-message.html'));
 });
-
+//Inbox
+app.get('/inbox',function(req,res){
+res.sendFile(path.join(__dirname,'ui','inbox.html'));
+});
+app.get('/ui/inbox.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'inbox.js'));
+});
 
 
 function hash(input,salt){
@@ -88,6 +94,7 @@ app.post('/create-user',function(req,res){
 			else
 			{
 				res.status(500).send(err.toString());
+
 			}
 		}
 		else
@@ -181,7 +188,37 @@ app.post('/new-message',function(req,res){
 		}
 	});
 });
+//INBOX
+app.get('/inbox', function(req, res){
+	alert("hereeee");
+	if(req.session && req.session.auth && req.session.auth.username)
+	{
+		var receiver=req.session.auth.username.toString();
+		pool.query('Select * from "message" where receiver=$1',[receiver],function(err,result){
+			if(err)
+			{
+				if(err.toString()==='error: insert or update on table "message" violates foreign key constraint "message_receiver_fkey"')
+				{	console.log(err.toString());
+					res.status(403).send(err.toString());
 
+				}
+				else
+				{	console.log(1)
+					console.log(err.toString());
+					res.status(500).send(err.toString());
+				}
+			}
+			else
+			{	console.log(result.toString());
+				res.send(result.toString());
+			}
+		});
+	}
+	else
+	{
+		res.send('You are not logged in');
+	}
+});
 var port = 1111;
 app.listen(port, function () {
   console.log(`MESSENGER app listening on port ${port}!`);
