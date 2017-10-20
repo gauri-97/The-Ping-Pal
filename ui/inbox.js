@@ -12,5 +12,6 @@
 			ul.innerHTML=list;
 		}
 	};
-	request.open('GET', 'http://localhost:1111/inbox', true);
+	request.open('GET', 'http://localhost:1111/fetch-message', true);
+	request.send(null);
 

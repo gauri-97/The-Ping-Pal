@@ -24,6 +24,7 @@ app.use(session({
 
 
 app.get('/', function (req, res) {
+	console.log('called');
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
 
@@ -189,8 +190,8 @@ app.post('/new-message',function(req,res){
 	});
 });
 //INBOX
-app.get('/inbox', function(req, res){
-	alert("hereeee");
+app.get('/fetch-message', function(req, res){
+	console.log("hereeee");
 	if(req.session && req.session.auth && req.session.auth.username)
 	{
 		var receiver=req.session.auth.username.toString();
