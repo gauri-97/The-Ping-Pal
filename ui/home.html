@@ -1,13 +1,17 @@
 <!doctype html>
 <html>
     <head>
-    	<title> Home Page</title>
+    	<title>Home Page</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link href="/ui/style.css" rel="stylesheet" />
     </head>
-    <div class="center">    
-        <img id="image"src="/ui/logo.png" class="img-medium"/>
+    <div style="text-align: right">
+    <a href="http://localhost:1111/logout"><input type=button value="Logout"></a>
     </div>
+    <div class="center">    
+        <img id="image"src="/ui/logo.png" class="img-small"/>
+    </div>
+
     <br>
     <body>
     <div class='center text-bold'>
@@ -16,15 +20,18 @@
     <hr/>
     <div class="footer center">
     <h3>What would you like to do next?</h3>
-    <a href="/new-message"> Write a New Message</a>
+    <a href="/new-message"><input type=button value="Write a New Message"></a>
     <br/>
     <br/>
-    <a href="/inbox">Go to Inbox</a>
+    <a href="/inbox"><input type=button value="Go to Inbox"></a>
     <br/>
     <br/>
-    <a href="/edit">Edit your profile</a>
+    <a href="/profile"><input type=button value="View your profile"></a>
+    <br/>
+    <br/>
+    <button id='admin-button'>Go to your Admin Page</button>
     </div>
-    <script type="text/javascript" src="/ui/main.js">
+    <script type="text/javascript" src="/ui/auth-check.js">
     </script>
     </body>
 </html>

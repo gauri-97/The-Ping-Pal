@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+    	<title> Home Page</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="/ui/style.css" rel="stylesheet" />
+
+    </head>
+    <body>
+    <div class=row>
+        <a href="http://localhost:1111/home"><input type=button value='Home' style="text-align: left"></a>
+        <a href="http://localhost:1111/logout"><input type=button value="Logout" style="margin-left: 90%"></a>
+    </div>
+
+    <div class="center">    
+        <img id="image" src="/ui/logo.png" class="img-small"/>
+    </div>
+
+    <div class='center text-bold'>
+    	<h1>Welcome to the Admin Page</h1>
+       <input type=button value="Delete User" id='del_user'>
+       <input type=button value="Delete Message" id='del_msg'>
+    </div>
+    <hr/>
+    <table id='message_list' style="margin: auto">
+    </table>
+     <table id='user_list' style="margin: auto">
+    </table>
+    <script type="text/javascript" src="/ui/admin-page.js"></script>
+    </body>
+</html>

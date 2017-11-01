@@ -11,7 +11,8 @@ var config={
 	database:'dbms',
 	host:'localhost',
 	port:'5432',
-	password:'0000'
+	password:'0000',
+	dateStrings:'date'
 };
 
 var pool=new Pool(config);
@@ -60,17 +61,40 @@ res.sendFile(path.join(__dirname, 'ui', 'home.html'));
 app.get('/ui/new-message.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'new-message.js'));
 });
+
 app.get('/new-message',function(req,res){
 res.sendFile(path.join(__dirname, 'ui', 'new-message.html'));
 });
+
 //Inbox
 app.get('/inbox',function(req,res){
 res.sendFile(path.join(__dirname,'ui','inbox.html'));
 });
+
 app.get('/ui/inbox.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'inbox.js'));
 });
 
+//Admin Page
+app.get('/admin-page',function(req,res){
+res.sendFile(path.join(__dirname,'ui','admin-page.html'));
+});
+
+app.get('/ui/auth-check.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'auth-check.js'));
+});
+
+app.get('/ui/admin-page.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'admin-page.js'));
+});
+//Edit profile
+app.get('/profile',function(req,res){
+res.sendFile(path.join(__dirname,'ui','profile.html'));
+});
+
+app.get('/ui/profile.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'profile.js'));
+});
 
 function hash(input,salt){
 	var hashed=crypto.pbkdf2Sync(input,salt,10000,512,'sha512');
@@ -80,10 +104,14 @@ function hash(input,salt){
 app.post('/create-user',function(req,res){
 	var username=req.body.username;
 	var password=req.body.password;
+	var mobile=req.body.mobile;
+	var address=req.body.address;
+	var age=req.body.age;
+	var gender=req.body.gender;
 
 	var salt=crypto.randomBytes(128).toString('hex');
 	var dbString=hash(password,salt);
-	pool.query('Insert into "user" (username,password) values ($1,$2)',[username,dbString],function(err,result){
+	pool.query('Insert into "user" (username,password,mobile,address,age,gender) values ($1,$2,$3,$4,$5,$6)',[username,dbString,mobile,address,age,gender],function(err,result){
 		
 		if(err)
 		{
@@ -156,7 +184,8 @@ app.get('/check-login', function(req, res){
 
 app.get('/logout',function(req,res){
 	delete req.session.auth;
-	res.send('you are logged out');
+	res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+
 });
 
 //new message
@@ -164,12 +193,15 @@ app.post('/new-message',function(req,res){
 	var receiver=req.body.receiver;
 	var content=req.body.content;
 	var sender=req.session.auth.username.toString();
+	var time=new Date();
+	var options = { 
+	day: "numeric", year: "numeric", month: "numeric",  
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+	};
+	time = time.toLocaleTimeString("en-in", options);  
+	
 
-	console.log(sender);
-	console.log(receiver);
-	console.log(content);
-
-	pool.query('Insert into "message" (sender,receiver,content) values ($1,$2,$3)',[sender,receiver,content],function(err,result){
+	pool.query('Insert into "message" (sender,receiver,content,time) values ($1,$2,$3,$4)',[sender,receiver,content,time],function(err,result){
 		
 		if(err)
 		{
@@ -190,13 +222,160 @@ app.post('/new-message',function(req,res){
 });
 //INBOX
 app.get('/fetch-message', function(req, res){
-	console.log("hereeee");
 	if(req.session && req.session.auth && req.session.auth.username)
 	{
 		var receiver=req.session.auth.username.toString();
-		console.log(receiver);
 		
-		pool.query('select sender,content from "message" where receiver=$1', [receiver],function(err,result){
+		pool.query('select sender,content,time from "message" where receiver=$1 order by time desc', [receiver],function(err,result){
+			if(err)
+			{	
+				if(result.rows.length===0)
+				{	
+					res.status(403).send(err.toString());
+
+				}
+				else
+				{	
+					console.log('something went wrong');
+					res.status(500).send(err.toString());
+				}
+			}
+			else
+			{
+				res.send(JSON.stringify(result.rows));
+			}
+		});
+	}
+	else
+	{	
+		
+		res.send('You are not logged in');
+	}
+});
+
+//Admin-page
+app.get('/admin',function(req,res){
+	var user=req.session.auth.username.toString();
+
+	pool.query('select username from "admin" where username=$1',[user],function(err,result){
+		if(err)
+		{
+		
+				res.status(500).send("Something went wrong");
+		}
+		else
+		{
+			if(result.rows.length===0)
+			{
+				res.status(403).send("You're not authorized as an Admin");
+			}
+			else
+			{
+				res.status(200).send("You're logged in as an Admin");
+			}
+		}
+	});
+});
+
+//del-user
+app.get('/get-user', function(req, res){
+	if(req.session && req.session.auth && req.session.auth.username)
+	{
+		var user=req.session.auth.username.toString();		
+		pool.query('select username from "user" where username!=$1 order by username asc', [user],function(err,result){
+			if(err)
+			{	
+				if(result.rows.length===0)
+				{	
+					res.status(403).send(err.toString());
+
+				}
+				else
+				{	
+					console.log('something went wrong');
+					res.status(500).send(err.toString());
+				}
+			}
+			else
+			{
+				res.send(JSON.stringify(result.rows));
+			}
+		});
+	}
+	else
+	{	
+		
+		res.send('You are not logged in');
+	}
+});
+
+app.post('/del-user', function(req, res){
+		var user=req.body.user;		
+		pool.query('Delete from "user" where username=$1 ', [user],function(err,result){
+			if(err)
+			{	
+
+					console.log('something went wrong');
+					res.status(500).send(err.toString());
+			}
+			else
+			{
+				res.status(200).send('User successfully deleted');
+			}
+		});
+});
+//Del-msg
+app.get('/get-msg', function(req, res){
+	if(req.session && req.session.auth && req.session.auth.username)
+	{		
+		pool.query('select sno,sender,receiver,content,time from "message" order by time desc',function(err,result){
+			if(err)
+			{	
+				if(result.rows.length===0)
+				{	
+					res.status(403).send(err.toString());
+
+				}
+				else
+				{	
+					console.log('something went wrong');
+					res.status(500).send(err.toString());
+				}
+			}
+			else
+			{
+				res.send(JSON.stringify(result.rows));
+			}
+		});
+	}
+	else
+	{	
+		
+		res.send('You are not logged in');
+	}
+});
+app.post('/del-msg', function(req, res){
+		var sno=req.body.sno;		
+		pool.query('Delete from "message" where sno=$1', [sno],function(err,result){
+			if(err)
+			{	
+
+					console.log('something went wrong');
+					res.status(500).send(err.toString());
+			}
+			else
+			{
+				res.status(200).send('Message successfully deleted');
+			}
+		});
+});
+//View Your profile
+app.get('/fetch-details', function(req, res){
+	if(req.session && req.session.auth && req.session.auth.username)
+	{
+		var user=req.session.auth.username.toString();
+		
+		pool.query('select username,mobile,address,age,gender from "user" where username=$1 ', [user],function(err,result){
 			
 			if(err)
 			{	
@@ -212,15 +391,8 @@ app.get('/fetch-message', function(req, res){
 				}
 			}
 			else
-			{				
-				var list=``;
-				var len=result.rows.length;
-				for(var i=0;i<len;i++){
-				var temp= result.rows[i];
-				temp=JSON.stringify(temp);
-					list=list+'<li>' +temp+'</li>';
-				}
-				res.send(list);
+			{
+				res.send(JSON.stringify(result.rows));
 			}
 		});
 	}

@@ -6,9 +6,14 @@
 			
 			if(request.status===200)
 			{
-			list=request.responseText;
-			ul=document.getElementById('message_list');
-			ul.innerHTML=list;
+			rows=JSON.parse(request.responseText);
+			toDisplay = `<tr><td><b>Sender</b></td><td><b>Message</b></td><td><b>Time</b></td></tr>`;
+			for (var i = 0; i < rows.length; i++) {
+				toDisplay = toDisplay + "<tr><td>" + rows[i].sender + "</td> <td>" + rows[i].content + "</td> <td>" + rows[i].time + "</td></tr>"
+			}
+			table=document.getElementById('message_list');
+
+			table.innerHTML=toDisplay;
 			}
 		}
 	};

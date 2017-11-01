@@ -8,6 +8,7 @@ submit.onclick= function(){
 			{
 				
 				alert("User Succesfully Created");
+				window.open('http://localhost:1111/','_self');
 			}
 			else if(request.status===403)
 			{
@@ -15,18 +16,30 @@ submit.onclick= function(){
 			}
 			else if(request.status===500)
 			{
-				alert('OOPS!Something went wrong');
+				alert('OOPS! Something went wrong');
 				alert(request.responseText);
 			}
 		}
 	};
 		var username=document.getElementById('username');
 		username=username.value;	
+
 		var password=document.getElementById('password');
 		password=password.value;
-		console.log(username);
-		console.log(password);
+
+		var mobile=document.getElementById('mobile');
+		mobile=mobile.value;
+
+		var address=document.getElementById('address');
+		address=address.value;
+
+		var age=document.getElementById('age');
+		age=age.value;
+
+		var gender=document.getElementById('gender');
+		gender=gender.value;
+
 	request.open('POST','http://localhost:1111/create-user',true);
 	request.setRequestHeader('Content-Type','application/json');
-	request.send(JSON.stringify({username:username,password:password}));
+	request.send(JSON.stringify({username:username,password:password,mobile:mobile,address:address,age:age,gender:gender}));
 };

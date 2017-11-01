@@ -5,25 +5,30 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link href="/ui/style.css" rel="stylesheet" />
     </head>
-
-    <div class="center">    
-        <img id="image" src="/ui/logo.png" class="img-small"/>
+    <body>
+    <div class=row>
+            <a href="http://localhost:1111/home"><input type=button value='Home' style="text-align: left"></a>
+            <a href="http://localhost:1111/logout"><input type=button value="Logout" style="margin-left: 90%"></a>
     </div>
-    <br>
-        <body>
-        <div class='top left text-bold'>
-        	<h1>New Message</h1>
+
+        <div class="center">    
+            <img id="image" src="/ui/logo.png" class="img-small"/>
         </div>
-        <hr/>
-        <div class='left'>
-            
-    	   <h4><b>To</b></h4>
-            <input id='receiver' type='text' placeholder='Enter the user id' size="50" />
-            <br/>
-            <h4><b>Message</b></h4>
-    	    <input id='content' type='text' placeholder="Enter your message" style="width:700px; height:300px;" />
-            <br/>
-    	    <input id='newMessageBtn' type=submit value='Submit'/>
+
+        <div style="text-align: left; padding-left: 5px">
+            <div class='text-bold'>
+            	<h2>New Message</h2>
+            </div>
+            <hr/>
+            <div class='left'>
+        	   <h4><b>To</b></h4>
+                <input id='receiver' type='text' placeholder='Enter the user id' size="50" />
+                <br/>
+                <h4><b>Message</b></h4>
+        	    <textarea id='content' placeholder="Enter your message" style="width:500px; height:200px;"></textarea>
+                <br/>
+        	    <input id='newMessageBtn' type=submit value='Send'/>
+            </div>
         </div>
 
         <script type="text/javascript" src="/ui/new-message.js">

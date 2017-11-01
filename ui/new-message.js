@@ -8,6 +8,7 @@ submit.onclick= function(){
 			{
 				
 				alert("Your message has been sent");
+				window.open('http://localhost:1111/home','_self');
 			}
 			else if(request.status===403)
 			{
